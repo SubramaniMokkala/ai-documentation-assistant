@@ -238,6 +238,28 @@ Chunk 2: "...rainforest. It contains incredible biodiversity..."
 
 ---
 
+## 📸 Screenshots
+
+### Main Interface
+![Main Interface](screenshots/main-interface.png)
+*Clean, intuitive interface ready for document upload*
+
+### Document Processing
+![Document Processed](screenshots/document-processed.png)
+*Document successfully processed with statistics shown*
+
+### AI Question Answering
+![Q&A Example](screenshots/qa-example-1.png)
+*Ask questions and get accurate answers with confidence scores*
+
+### AI Question Answering
+![Q&A Example](screenshots/qa-example-2.png)
+*Ask questions and get accurate answers with confidence scores*
+
+### Source Attribution
+![Source View](screenshots/sources-view.png)
+*Every answer cites its sources for transparency*
+
 ##  Key Concepts Demonstrated
 
 ### Data Science & ML
