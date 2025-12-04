@@ -1,5 +1,5 @@
 # Question Answering Engine
-# Uses local Hugging Face models for document Q&A
+#Uses local Hugging Face models for document Q&A
 
 from transformers import pipeline
 from typing import List, Dict
@@ -41,6 +41,24 @@ class QAEngine:
             self.qa_pipeline = None
     
     
+    def _is_broad_question(self, question: str) -> bool:
+        """
+        Check if question is too broad for extractive QA
+        """
+        broad_keywords = [
+            'what is the document about',
+            'what is this about',
+            'summarize',
+            'what is being said',
+            'what does it say',
+            'main topic',
+            'title'
+        ]
+        
+        question_lower = question.lower()
+        return any(keyword in question_lower for keyword in broad_keywords)
+    
+    
     def answer_question(self, question: str, contexts: List[Dict], 
                        max_context_length: int = 2000) -> Dict:
         """
@@ -67,6 +85,15 @@ class QAEngine:
         # If model failed to load, use simple extraction
         if self.qa_pipeline is None:
             return self._simple_answer(question, contexts)
+        
+        # Check if question is too broad
+        if self._is_broad_question(question):
+            return {
+                'answer': self._generate_summary_answer(contexts),
+                'confidence': 0.75,
+                'sources': self._extract_sources(contexts[:3]),
+                'note': 'Generated summary for broad question'
+            }
         
         try:
             # Use transformer model for Q&A
@@ -173,6 +200,27 @@ class QAEngine:
         }
     
     
+    def _generate_summary_answer(self, contexts: List[Dict]) -> str:
+        """
+        Generate a summary-style answer for broad questions
+        """
+        if not contexts:
+            return "No relevant information found."
+        
+        # Take top 3 contexts and combine
+        top_contexts = contexts[:3]
+        summary_parts = []
+        
+        for ctx in top_contexts:
+            text = ctx['text']
+            # Take first sentence or up to 150 chars
+            if len(text) > 150:
+                text = text[:150] + "..."
+            summary_parts.append(text)
+        
+        return " ".join(summary_parts)
+    
+    
     def generate_summary(self, contexts: List[Dict], max_contexts: int = 3) -> str:
         """
         Generate a summary of multiple contexts
@@ -236,9 +284,9 @@ if __name__ == "__main__":
         print(f"  - {source['document']} (similarity: {source['similarity']:.2f})")
     
     print("\n" + "=" * 60)
-    print("QA Engine working correctly")
+    print("QA Engine working correctly!")
     print("\nKey features:")
     print("  - Extractive Q&A from documents")
     print("  - Source attribution")
     print("  - Confidence scoring")
-    print("  - Runs 100% locally (no API calls)")
+    print("  - Runs 100% locally (no API calls!)")
