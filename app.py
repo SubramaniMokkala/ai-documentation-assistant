@@ -178,6 +178,18 @@ def main():
             with col2:
                 if chat.get('sources'):
                     with st.expander("📚 View Sources"):
+                        # Add custom CSS for this section
+                        st.markdown("""
+                        <style>
+                        .source-box {
+                            background-color: #f0f8ff;  /* Light blue background */
+                            padding: 15px;
+                            border-radius: 8px;
+                            margin-bottom: 10px;
+                            border-left: 4px solid #4CAF50;
+                        }
+                        </style>
+                        """, unsafe_allow_html=True)
                         for source in chat['sources']:
                             st.markdown(f"""
                             <div class="source-box">
